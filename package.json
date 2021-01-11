@@ -1,0 +1,22 @@
+{
+  "name": "s3-stream-zipper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andreizanik/s3-stream-zipper.git"
+  },
+  "author": {
+    "name": "Andrei Zanouski",
+    "email": "andreizanik@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andreizanik/s3-stream-zipper/issues"
+  },
+  "homepage": "https://github.com/andreizanik/s3-stream-zipper#readme"
+}
