@@ -1,7 +1,7 @@
 {
   "name": "s3-stream-zipper",
   "version": "1.0.0",
-  "description": "",
+  "description": "Downloading files from S3 bucket and their archivation. Using Stream, so the package doesn't spend RAM and disk space\n",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -18,5 +18,10 @@
   "bugs": {
     "url": "https://github.com/andreizanik/s3-stream-zipper/issues"
   },
-  "homepage": "https://github.com/andreizanik/s3-stream-zipper#readme"
+  "homepage": "https://github.com/andreizanik/s3-stream-zipper#readme",
+  "dependencies": {
+    "archiver": "^5.2.0",
+    "aws-sdk": "^2.824.0",
+    "stream-array": "^1.1.2"
+  }
 }
