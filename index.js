@@ -3,20 +3,26 @@ const archiver = require('archiver');
 const AWS = require('aws-sdk');
 
 class S3zipper {
-  constructor({ accessKeyId, secretAccessKey, region, bucket, debug }) {
-    this.accessKeyId = accessKeyId;
-    this.secretAccessKey = secretAccessKey;
-    this.region = region;
-    this.bucket = bucket;
-    this.debug = debug || false;
+  constructor({ s3, accessKeyId, secretAccessKey, region, bucket, debug }) {
+    if (s3) {
+      this.s3 = s3;
+      this.bucket = bucket;
+      this.debug = debug || false;
+    } else {
+      this.accessKeyId = accessKeyId;
+      this.secretAccessKey = secretAccessKey;
+      this.region = region;
+      this.bucket = bucket;
+      this.debug = debug || false;
 
-    AWS.config.update({
-      accessKeyId: this.accessKeyId,
-      secretAccessKey: this.secretAccessKey,
-      region: this.region,
-    });
+      AWS.config.update({
+        accessKeyId: this.accessKeyId,
+        secretAccessKey: this.secretAccessKey,
+        region: this.region,
+      });
 
-    this.s3 = new AWS.S3();
+      this.s3 = new AWS.S3();
+    }
   }
 
   archive = (files) => {
