@@ -1,6 +1,6 @@
 {
   "name": "s3-stream-zipper",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Downloading files from S3 bucket and their archivation. Using Stream, so the package doesn't spend RAM and disk space\n",
   "main": "index.js",
   "scripts": {
