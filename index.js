@@ -32,25 +32,40 @@ class S3zipper {
 
   filesKeyStream = (keys)  => {
     if (!keys) return null;
-    let paths = [];
+    let files = [];
 
-    keys.forEach((key) => {
-      if(typeof key === 'object') {
-        paths.push({ file: key.file, folder: key.folder || '', fullPath: `${key.folder || ''}${key.file}` })
+    const getUniqueName = (name, folder) => {
+      const equal = files.filter(file => file.shadowName === name && folder === file.folder);
+      if (!equal || !equal.length) return name;
+      const nameSplit = name.split('.')
+      const firstPart = nameSplit.slice(0, nameSplit.length - 1).join('.')
+      return `${firstPart}(${equal.length}).${nameSplit[nameSplit.length - 1]}`;
+    }
+
+    keys.forEach((currKey) => {
+      if(typeof currKey === 'object') {
+        const splitKey = currKey.key.split('/');
+        const name = currKey.name
+          ? currKey.name
+          : splitKey.length > 1 ? splitKey[splitKey.length - 1] : currKey.key
+
+        const folder = currKey.folder || ''
+        files.push({ key: currKey.key, folder, name: getUniqueName(name, folder), shadowName: name })
       } else {
-        const splitKey = key.split('/');
+        const splitKey = currKey.split('/');
         if (splitKey.length > 1) {
-          paths.push({
-            file: splitKey[splitKey.length - 1],
-            folder: splitKey.slice(0, splitKey.length - 1).join('/') + '/',
-            fullPath: key,
+          files.push({
+            key: currKey,
+            folder: '',
+            name: splitKey[splitKey.length - 1],
+            shadowName: splitKey[splitKey.length - 1],
           });
         } else {
-          paths.push({ file: key, folder: '', fullPath: key });
+          files.push({ key: currKey, folder: '', name: currKey, shadowName: currKey });
         }
       }
     });
-    return streamify(paths);
+    return streamify(files);
   };
 
   archiveStream = (keyStream) => {
@@ -64,15 +79,15 @@ class S3zipper {
 
     let fileCounter = 0;
     keyStream
-      .on('data', (key) => {
+      .on('data', (currKey) => {
         fileCounter += 1;
-        this.debug && console.log('-> start stream [file]:', key.fullPath);
+        this.debug && console.log('-> start stream [file]:', currKey.key);
 
-        const params = { Bucket: this.bucket, Key: key.fullPath };
+        const params = { Bucket: this.bucket, Key: currKey.key };
         const s3File = this.s3.getObject(params).createReadStream();
 
         s3File.on('end', () => {
-          this.debug && console.log('-> finalize archive [file]:', key.fullPath);
+          this.debug && console.log('-> finalize archive [file]:', currKey.key);
           fileCounter -= 1;
 
           if (fileCounter < 1) {
@@ -86,7 +101,7 @@ class S3zipper {
           archive.emit('error', err)
         });
 
-        archive.append(s3File, { name: key.file, prefix: key.folder });
+        archive.append(s3File, { name: currKey.name, prefix: currKey.folder });
       })
 
       .on('end', function () {
