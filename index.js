@@ -37,19 +37,19 @@ class S3zipper {
     const getUniqueName = (name, folder) => {
       const equal = files.filter(file => file.shadowName === name && folder === file.folder);
       if (!equal || !equal.length) return name;
-      const nameSplit = name.split('.')
-      const firstPart = nameSplit.slice(0, nameSplit.length - 1).join('.')
+      const nameSplit = name.split('.');
+      const firstPart = nameSplit.slice(0, nameSplit.length - 1).join('.');
       return `${firstPart}(${equal.length}).${nameSplit[nameSplit.length - 1]}`;
-    }
+    };
 
     keys.forEach((currKey) => {
       if(typeof currKey === 'object') {
         const splitKey = currKey.key.split('/');
         const name = currKey.name
           ? currKey.name
-          : splitKey.length > 1 ? splitKey[splitKey.length - 1] : currKey.key
+          : splitKey.length > 1 ? splitKey[splitKey.length - 1] : currKey.key;
 
-        const folder = currKey.folder || ''
+        const folder = currKey.folder || '';
         files.push({ key: currKey.key, folder, name: getUniqueName(name, folder), shadowName: name })
       } else {
         const splitKey = currKey.split('/');
@@ -77,22 +77,17 @@ class S3zipper {
       this.debug && console.log('archive error', err);
     });
 
-    let fileCounter = 0;
     keyStream
       .on('data', (currKey) => {
-        fileCounter += 1;
-        this.debug && console.log('-> start stream [file]:', currKey.key);
+        keyStream.pause();
+        this.debug && console.log('-> start download stream [file]:', currKey.key);
 
         const params = { Bucket: this.bucket, Key: currKey.key };
         const s3File = this.s3.getObject(params).createReadStream();
 
         s3File.on('end', () => {
+          keyStream.resume();
           this.debug && console.log('-> finalize archive [file]:', currKey.key);
-          fileCounter -= 1;
-
-          if (fileCounter < 1) {
-            this.debug && console.log('-> finalize all');
-          }
         });
 
         s3File.on('error', (err) => {

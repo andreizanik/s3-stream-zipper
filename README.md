@@ -3,6 +3,11 @@
 [![npm version](https://badge.fury.io/js/s3-stream-zipper.svg)](https://badge.fury.io/js/s3-stream-zipper)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/andreizanik/s3-stream-zipper.svg)
 
+Allows to download and archive large amounts of data from AWS S3.
+Unlike similar solutions, it does not save downloaded files entirely in RAM and on disk. Files are downloaded in a stream in parts and immediately archived.
+
+`.archive(files)` returns Stream
+
 ## Installation
 ```
 npm i s3-stream-zipper
