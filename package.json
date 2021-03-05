@@ -1,11 +1,19 @@
 {
   "name": "s3-stream-zipper",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Downloading files from S3 bucket and their archivation. Using Stream, so the package doesn't spend RAM and disk space\n",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "amazon",
+    "aws",
+    "s3",
+    "stream",
+    "archiver",
+    "archive"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andreizanik/s3-stream-zipper.git"
