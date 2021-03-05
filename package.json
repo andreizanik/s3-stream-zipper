@@ -6,6 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [
+    "amazon",
+    "aws",
+    "s3",
+    "stream",
+    "archiver",
+    "archive"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/andreizanik/s3-stream-zipper.git"
